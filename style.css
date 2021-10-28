@@ -1,0 +1,32 @@
+body {
+    background-color: rgb(169, 209, 224);
+    height: 100vh;
+    position: relative;
+}
+.container {
+    width: 60%;
+    height: 400px;
+    margin: auto;
+}
+#add-name {
+    width: 100px;
+}
+#window {
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: none;
+    position: absolute;
+    min-height: 400px;
+    width: 80%;
+    z-index: 10;
+    background-color: silver;
+    border-radius: 10px;
+    box-shadow: 0 0 10px black;
+}
+#window form {
+    width: 100%;
+}
+button {
+    height: 40px;
+}

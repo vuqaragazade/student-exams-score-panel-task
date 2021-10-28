@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="d-flex align-items-center">
+    <div class="container">
+            <div id="adding-info" class="row flex-column">
+                <h2 class="text-center">Tələbə siyahısı</h2>
+                <input class="form-control" id="student-name" type="text"/>
+                <button class="btn btn-primary mt-3" id="add-name">Əlavə et</button>
+            </div>
+            <div id="results" class="row">
+                <table class="table table-striped">
+                    <thead>
+                      <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Tələbə adı</th>
+                        <th scope="col">İmtahan</th>
+                        <th scope="col">Minimum qiymət</th>
+                        <th scope="col">Maxsimum qiymət</th>
+                        <th scope="col">Ortalama</th>
+                      </tr>
+                    </thead>
+                    <tbody id="list">
+
+                    </tbody>
+                  </table>
+            </div> 
+    </div>
+    <div id="window" class="p-2">
+        <div class="row p-4" id="subject-panel">
+            <form class="d-flex flex-row justify-content-between align-items-center">
+                <div class="d-flex flex-row">
+                    <div class="form-group mr-3">
+                        <label>Imtahan adı</label>
+                        <select class="form-control" id="subject">
+                            <option value="riyaziyyat">Riyaziyyat</option>
+                            <option value="kimya">Kimya</option>
+                            <option value="fizika">Fizika</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Qiymət</label>
+                        <input type="number" class="form-control" id="score" max="100" min="0">
+                    </div>   
+                </div>   
+                <div id="button"></div>
+            </form>    
+        </div>
+        <div class="row p-2">
+            <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Imtahan</th>
+                    <th scope="col">Qiymət</th>
+                  </tr>
+                </thead>
+                <tbody id="score-results">
+                </tbody>
+              </table>
+        </div>
+        <button type="button" id="close" class="btn btn-outline-danger">Close</button>
+    </div>
+    <script>
+        let siyahi = [];
+        $("#close").click(() => {
+            $("#window").css("display","none");
+        })
+        function addData(id) {
+            if(siyahi[id-1]["scores"] == undefined) {
+                siyahi[id-1]["scores"] = {};
+            }
+            $("#window").css("display","block");
+            $("#subject-panel form #button").html("<button class='btn btn-primary mt-3' id='add-score' onclick='addScore("+id+")'>Əlavə et</button>")
+            $("#score-results").html("")
+            for(var i in siyahi[id-1]["scores"]){
+                $("#score-results")
+                .append(`
+                    <tr>
+                        <th scope="row">1</th>
+                        <td>${i}</td>
+                        <td>${siyahi[id-1]["scores"][i]}</td>
+                    </tr>
+                `)
+            }
+        }
+        function addScore(id) {
+            if($("#subject").val() !="" && $("#score").val() != "" && $("#score").val() <=100 && $("#score").val() >= 0 ) {
+                siyahi[id-1]["scores"][$("#subject").val()] = $("#score").val();
+                function max() {
+                    myarray = [];
+                    for(var i in siyahi[id-1]["scores"]){
+                        myarray.push(parseInt(siyahi[id-1]["scores"][i]));
+                    }
+                    return Math.max.apply(Math, myarray);
+                }
+                function min() {
+                    myarray = [];
+                    for(var i in siyahi[id-1]["scores"]){
+                        myarray.push(parseInt(siyahi[id-1]["scores"][i]));
+                    }
+                    return Math.min.apply(Math, myarray);
+                }
+                function average() {
+                    total = 0;
+                    last = 0
+                    for(var i in siyahi[id-1]["scores"]){
+                        total += parseInt(siyahi[id-1]["scores"][i]);
+                        last++;
+                    }
+                    return total/last;
+                }
+                siyahi[id-1]["max"] = max();
+                siyahi[id-1]["min"] = min();
+                siyahi[id-1]["average"] = average();
+                console.log(siyahi[id-1])
+                $("#list").html("")
+                siyahi.map(a => {
+                    $("#list")
+                    .append(`
+                        <tr>
+                            <th scope="row">${a.id}</th>
+                            <td>${a.name}</td>
+                            <td onclick="addData(${a.id})"><a href="#">Imtahan</a></td>
+                            <td>${a.min}</td>
+                            <td>${a.max}</td>
+                            <td>${a.average}</td>
+                        </tr>
+                    `)
+                });
+            }
+            $("#score-results").html("")
+            for(var i in siyahi[id-1]["scores"]){
+                $("#score-results")
+                .append(`
+                    <tr>
+                        <th scope="row">1</th>
+                        <td>${i}</td>
+                        <td>${siyahi[id-1]["scores"][i]}</td>
+                    </tr>
+                `)
+            }
+            console.log(siyahi);
+        }
+        $(document).ready(() => {
+            let count = 1;
+            $("#add-name").click(() => {
+                if($("#student-name").val() != "") {
+                    console.log($("#student-name").val());
+                    siyahi.push({id: count,name: $("#student-name").val(), max: "", min: "", average: ""})
+                    console.log(siyahi)
+                    $("#list").html("")
+                    count++;
+                    $('#adding-info :input').val('');
+                }
+                $("#list").html("")
+                siyahi.map(a => {
+                    $("#list")
+                    .append(`
+                        <tr>
+                            <th scope="row">${a.id}</th>
+                            <td>${a.name}</td>
+                            <td onclick="addData(${a.id})"><a href="#">Imtahan</a></td>
+                            <td>${a.min}</td>
+                            <td>${a.max}</td>
+                            <td>${a.average}</td>
+                        </tr>
+                    `)
+                });
+            })
+        })
+    </script>
+</body>
+</html>
